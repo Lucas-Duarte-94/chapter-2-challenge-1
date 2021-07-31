@@ -1,3 +1,4 @@
+import { render } from '@testing-library/react';
 import { createContext, ReactNode, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import { api } from '../services/api';
@@ -23,18 +24,41 @@ const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const [cart, setCart] = useState<Product[]>(() => {
-    // const storagedCart = Buscar dados do localStorage
+    const storagedCart = localStorage.getItem('@RocketShoes:cart')
 
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
+    if (storagedCart) {
+      return JSON.parse(storagedCart);
+    }
 
     return [];
   });
 
   const addProduct = async (productId: number) => {
     try {
-      // TODO
+      const res = await (
+        await api.get(`/products/${productId}`)).data as {
+          id: number;
+          title: string;
+          price: number;
+          image: string;
+          amount: number;
+        }
+      const stockAmount = await (
+        await api.get(`/stock/${productId}`)
+      ).data as {id: number; amount: number}
+
+
+      console.log('estoque maximo: ' + stockAmount.amount)                                            // falta verificar quantidade no estoque
+
+      if(cart.find(x => x.id === productId) === undefined) {
+        setCart([...cart, {...res, amount:1}])
+        localStorage.setItem('@RocketShoes:cart', JSON.stringify([...cart, {...res, amount:1}]))
+      } else {
+        updateProductAmount({productId, amount:1})
+      }
+        
+      
+
     } catch {
       // TODO
     }
@@ -43,6 +67,15 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
   const removeProduct = (productId: number) => {
     try {
       // TODO
+      const removedItem = cart.reduce((filtered, product) => {
+        if(productId !== product.id) {
+          filtered.push(product)
+        }
+        
+        return filtered;
+      }, [] as Product[]) 
+      setCart(removedItem)
+      localStorage.setItem('@RocketShoes:cart', JSON.stringify(removedItem))
     } catch {
       // TODO
     }
@@ -53,7 +86,14 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount,
   }: UpdateProductAmount) => {
     try {
-      // TODO
+      cart.forEach(product => {
+        if(product.id === productId) {
+          product.amount += amount
+          console.log('passou')
+        }
+      })
+      setCart(cart)
+      localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart))
     } catch {
       // TODO
     }
