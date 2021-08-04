@@ -20,8 +20,6 @@ interface Product {
 const Cart = (): JSX.Element => {
   const { cart, removeProduct, updateProductAmount } = useCart();
 
-  const [render, setRender] = useState(0);
-
   const cartFormatted = cart.map(product => ({
      // TODO
     product : {...product, formattedPrice:formatPrice(product.price), subTotal:formatPrice(product.price * product.amount)}
