@@ -1,6 +1,15 @@
 # RocketShoes
 
------------------------ imagens do app ----------------------
+All pages is written in portuguese(pt-br).
+
+main page:
+
+![main page](https://user-images.githubusercontent.com/57713413/128200937-8605e4ed-5381-469c-bbe1-e29862b54e92.png)
+
+cart page:
+
+![cart page](https://user-images.githubusercontent.com/57713413/128201020-1fa4cab4-3813-4b74-9918-bffbd24fa771.png)
+
 
 ## About the project
 
